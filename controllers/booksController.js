@@ -31,3 +31,23 @@ if (error) return res.status(500).json({
      res.status(201).json(data);
      return res;
 }
+
+// actualizar un libro
+exports.updateBook = async (req, res) => {
+  const { id } = req.params;
+  const { title, author, description, publication_year } = req.body;
+  const { data, error } = await supabaseAnonClient
+    .from("books")
+    .update({title, author, description, publication_year })
+    .eq("id", id);
+  if (error) return res.status(400).json({ error: error.message });
+  res.json(data[0]);
+};
+
+// eliminar un libro
+exports.deleteBook = async (req, res) => {
+  const { id } = req.params;
+  const { error } = await supabaseAnonClient.from("books").delete().eq("id", id);
+  if (error) return res.status(400).json({ error: error.message });
+  res.status(204).send();
+};
